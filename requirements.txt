@@ -1,0 +1,12 @@
+fastapi
+python-multipart
+langchain
+langchain-community
+langchain-google-genai
+langchain-openai
+pandas
+python-dotenv
+uvicorn
+pypdf
+docx2txt
+openpyxl

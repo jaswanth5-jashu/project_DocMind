@@ -1,0 +1,292 @@
+
+.left-panel {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-heading {
+  flex-shrink: 0;
+  padding: 16px;
+}
+
+.panel-heading h2 {
+  margin: 0 0 5px;
+  font-size: 18px;
+}
+
+.panel-heading p {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.reset-button {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.reset-button:disabled,
+.panel-tab:disabled,
+.upload-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.panel-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 12px;
+  flex-shrink: 0;
+}
+
+.panel-tab {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.panel-tab.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.panel-content {
+  flex: 1;
+  min-height: 0;
+  padding: 0 16px 16px;
+  overflow: hidden;
+}
+
+.chat-content,
+.upload-content {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-content h3,
+.upload-content h3 {
+  flex-shrink: 0;
+  margin: 4px 0 6px;
+  font-size: 16px;
+}
+
+.chat-content > p,
+.upload-content > p {
+  flex-shrink: 0;
+  margin: 0 0 12px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.chat-history {
+  flex: 1;
+  min-height: 100px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 12px 4px;
+  margin-bottom: 12px;
+  scroll-behavior: smooth;
+}
+
+.chat-empty {
+  margin: auto 0;
+  padding: 20px 8px;
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.65;
+}
+
+.chat-message {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-width: 88%;
+}
+
+.user-message {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.assistant-message {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+.message-sender,
+.message-provider {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.message-bubble {
+  padding: 10px 13px;
+  border-radius: 14px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  font-size: 13px;
+  background: #f1f3f5;
+  color: #202124;
+}
+
+.user-message .message-bubble {
+  background: #d9fdd3;
+  color: #163d24;
+  border-bottom-right-radius: 4px;
+}
+
+.assistant-message .message-bubble {
+  border-bottom-left-radius: 4px;
+}
+
+.message-bubble.message-error {
+  background: #fff0f0;
+  color: #b42318;
+}
+
+.typing-indicator {
+  opacity: 0.75;
+  font-style: italic;
+}
+
+.chat-form {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.chat-form label {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.chat-input {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 70px;
+  padding: 11px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.chat-input:focus {
+  border-color: #2563eb;
+}
+
+.chat-input:disabled {
+  opacity: 0.65;
+}
+
+.upload-button {
+  width: 100%;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.upload-button:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.upload-error {
+  margin: 0;
+  color: #dc2626;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.upload-content {
+  overflow-y: auto;
+}
+
+.file-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 12px;
+  margin: 10px 0;
+  border: 1px dashed #9ca3af;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 12px;
+}
+
+.file-picker-icon {
+  font-size: 28px;
+}
+
+.file-picker strong {
+  font-size: 14px;
+}
+
+#document-file {
+  display: none;
+}
+
+.selected-file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.selected-file-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  .panel-heading {
+    padding: 12px;
+  }
+
+  .panel-tabs {
+    padding: 0 12px 10px;
+  }
+
+  .panel-content {
+    padding: 0 12px 12px;
+  }
+
+  .chat-message {
+    max-width: 94%;
+  }
+}

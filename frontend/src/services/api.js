@@ -1,0 +1,61 @@
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "/api";
+
+
+export async function uploadDocument(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch(`${API_BASE_URL}/upload`, {
+    method: "POST",
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.detail || "File upload failed");
+  }
+
+  return data;
+}
+
+export async function sendQuestion(question) {
+  const response = await fetch(`${API_BASE_URL}/chat`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ question }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.detail || "Failed to get an answer");
+  }
+
+  if (!data.answer) {
+    throw new Error(
+      data.message || "Please upload a document first"
+    );
+  }
+
+  return data;
+}
+
+
+export async function resetSession() {
+  const response = await fetch(`${API_BASE_URL}/reset`, {
+    method: "POST",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.detail || "Failed to reset session");
+  }
+
+  return data;
+}
