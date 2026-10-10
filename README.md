@@ -1,5 +1,4 @@
-﻿# project_DocMind
-# DocMind – RAG Document Q&A
+﻿# DocMind – RAG Document Q&A
 
 DocMind is a **Retrieval-Augmented Generation (RAG) based document question-answering web application** that allows users to upload documents and ask questions about their content. It extracts text from supported file formats, splits the content into smaller chunks, generates embeddings, and retrieves relevant information to generate context-aware answers using Large Language Models (LLMs).
 
