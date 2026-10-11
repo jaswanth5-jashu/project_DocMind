@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import "./RightPanel.css";
 
-function RightPanel({ uploadData, chatData }) {
+function RightPanel({ uploadData, chatData, onSwitchToWorkspace }) {
   const [expandedChunks, setExpandedChunks] = useState({});
   const [expandedVectors, setExpandedVectors] = useState({});
 
@@ -31,9 +30,21 @@ function RightPanel({ uploadData, chatData }) {
   return (
     <aside className="right-panel">
       <div className="right-panel-header">
-        <div>
-          <h2>Document Inspector</h2>
-          <p>Explore chunks, embeddings and retrieval results</p>
+        <div className="header-titles">
+          <div className="header-titles-top">
+            {onSwitchToWorkspace && (
+              <button
+                type="button"
+                className="mobile-back-btn"
+                onClick={onSwitchToWorkspace}
+                aria-label="Back to Workspace"
+              >
+                ← Workspace
+              </button>
+            )}
+            <h2>Document Inspector</h2>
+          </div>
+          <p>Explore chunks, embeddings, and retrieval results</p>
         </div>
         <span className="inspector-badge">RAG VIEW</span>
       </div>
@@ -41,17 +52,27 @@ function RightPanel({ uploadData, chatData }) {
       {!uploadData ? (
         <div className="inspector-section">
           <div className="inspector-empty">
-            <div className="empty-icon">▤</div>
-            <h4>No document uploaded</h4>
-            <p>Use the Upload tab to inspect chunks and vectors.</p>
+            <div className="empty-icon">📊</div>
+            <h4>No document uploaded yet</h4>
+            <p>Upload a PDF, TXT, DOCX, or CSV document to inspect extracted chunks and embeddings.</p>
+            {onSwitchToWorkspace && (
+              <button
+                type="button"
+                className="mobile-action-prompt"
+                onClick={onSwitchToWorkspace}
+              >
+                Go to Upload tab →
+              </button>
+            )}
           </div>
         </div>
       ) : (
         <>
           <div className="document-summary">
-            <div>
-              <span className="summary-label">Uploaded file</span>
-              <strong>{uploadData.filename}</strong>
+            <div className="summary-info">
+              <span className="summary-label">Uploaded Document</span>
+              <strong className="summary-filename">{uploadData.filename}</strong>
+              <span className="summary-type">{uploadData.file_type || "Document"}</span>
             </div>
 
             <div className="summary-count">
@@ -69,7 +90,7 @@ function RightPanel({ uploadData, chatData }) {
             </div>
 
             <p className="inspector-description">
-              Extracted text split into smaller pieces for retrieval.
+              Extracted document text partitioned into chunk intervals for vector indexing.
             </p>
 
             <div className="chunk-list">
@@ -84,8 +105,8 @@ function RightPanel({ uploadData, chatData }) {
                 return (
                   <article className="chunk-card" key={chunk.chunk}>
                     <div className="chunk-card-header">
-                      <h4>Document Chunk {chunk.chunk}</h4>
-                      <span>{dimensions} dimensions</span>
+                      <h4>Chunk #{chunk.chunk}</h4>
+                      <span className="dimension-badge">{dimensions} dimensions</span>
                     </div>
 
                     <div className="chunk-explanation">
@@ -99,8 +120,7 @@ function RightPanel({ uploadData, chatData }) {
                       {vector.length > 0 ? (
                         <>
                           <p className="inspector-description">
-                            Numerical representation of this chunk used for
-                            similarity search.
+                            Dense numerical representation for semantic similarity search.
                           </p>
 
                           <code className="vector-preview">
@@ -115,8 +135,7 @@ function RightPanel({ uploadData, chatData }) {
 
                           <div className="vector-footer">
                             <span>
-                              Showing {visibleVector.length} of{" "}
-                              {dimensions} values
+                              Showing {visibleVector.length} of {dimensions} values
                             </span>
 
                             <button
@@ -131,8 +150,7 @@ function RightPanel({ uploadData, chatData }) {
                         </>
                       ) : (
                         <p className="inspector-description">
-                          Vector values were not included in the upload
-                          response.
+                          Vector values were not included in the response.
                         </p>
                       )}
                     </div>
@@ -164,16 +182,17 @@ function RightPanel({ uploadData, chatData }) {
         </>
       )}
 
+      {/* Retrieved Chunks Section */}
       <div className="inspector-section">
         <div className="section-heading">
-          <h3>Retrieved Chunks</h3>
+          <h3>Retrieved Context Chunks</h3>
           <span className="count-badge">
-            {chatData?.retrieved_chunks?.length || 0} chunks
+            {chatData?.retrieved_chunks?.length || 0} retrieved
           </span>
         </div>
 
         <p className="inspector-description">
-          Text selected from the document as context for your question.
+          Top matching passages retrieved from vector search to answer your question.
         </p>
 
         {chatData?.retrieved_chunks?.length ? (
@@ -183,10 +202,10 @@ function RightPanel({ uploadData, chatData }) {
               const isMetadataExpanded = !!expandedChunks[metadataKey];
 
               return (
-                <article className="chunk-card" key={metadataKey}>
+                <article className="chunk-card retrieved-card" key={metadataKey}>
                   <div className="chunk-card-header">
-                    <h4>Retrieved Chunk {index + 1}</h4>
-                    <span>Search result</span>
+                    <h4>Result #{index + 1}</h4>
+                    <span className="retrieved-badge">Relevant Context</span>
                   </div>
 
                   <p className="chunk-label">RETRIEVED TEXT</p>
@@ -217,28 +236,29 @@ function RightPanel({ uploadData, chatData }) {
           </div>
         ) : (
           <div className="inspector-empty">
-            <h4>No search results yet</h4>
-            <p>Ask a question to see retrieved chunks here.</p>
+            <h4>No retrieved chunks yet</h4>
+            <p>Ask a question in the Workspace chat to see context retrieval here.</p>
           </div>
         )}
       </div>
 
+      {/* Generated Answer Section */}
       <div className="inspector-section">
         <div className="section-heading">
           <h3>Generated Answer</h3>
           {chatData?.provider && (
-            <span className="count-badge">{chatData.provider}</span>
+            <span className="count-badge provider-badge">{chatData.provider}</span>
           )}
         </div>
 
         {chatData?.answer ? (
           <div className="answer-content">
-            <p>{chatData.answer}</p>
+            <p className="answer-text">{chatData.answer}</p>
           </div>
         ) : (
           <div className="inspector-empty">
-            <h4>Waiting for a question</h4>
-            <p>Your document-based answer will appear here.</p>
+            <h4>Awaiting question</h4>
+            <p>The AI-generated response based on your document will appear here.</p>
           </div>
         )}
       </div>

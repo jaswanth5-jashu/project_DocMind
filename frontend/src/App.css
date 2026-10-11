@@ -1,61 +1,175 @@
-
-#root {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-}
-
 .app {
   width: 100%;
   height: 100dvh;
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: transparent !important;
+}
+
+/* Mobile & Tablet View Switcher */
+.mobile-nav {
+  display: none;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(199, 210, 254, 0.6);
+  padding: 8px 12px;
+  gap: 8px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.mobile-nav-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 12px;
+  min-height: 40px;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-nav-btn.active {
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+.mobile-nav-icon {
+  font-size: 14px;
+}
+
+.mobile-nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: 9999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.mobile-nav-btn.active .mobile-nav-badge {
+  background: #ffffff;
+  color: #2563eb;
+}
+
+/* Dashboard Layout */
+.dashboard {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 390px minmax(0, 1fr);
+  gap: 18px;
+  padding: 18px 22px;
+  overflow: hidden;
+}
+
+.dashboard-left,
+.dashboard-right {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.12),
+    0 5px 15px rgba(15, 23, 42, 0.06);
+}
+
+.dashboard-left {
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-.dashboard {
-  flex: 1;
-  min-height: 0;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 400px minmax(0, 1fr);
-  gap: 16px;
-  padding: 16px;
-  overflow: hidden;
-}
-
-.dashboard-left {
-  min-width: 0;
-  min-height: 0;
-  height: 100%;
-  overflow: hidden;
-}
-
 .dashboard-right {
-  min-width: 0;
-  min-height: 0;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
 }
 
-@media (max-width: 768px) {
+/* Tablet Landscape (861px - 1024px) */
+@media (max-width: 1024px) and (min-width: 861px) {
   .dashboard {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: 280px minmax(0, 1fr);
+    grid-template-columns: 330px minmax(0, 1fr);
+    gap: 14px;
+    padding: 14px;
+  }
+}
+
+/* Tablet Portrait & Mobile (<= 860px) */
+@media (max-width: 860px) {
+  .mobile-nav {
+    display: flex;
+  }
+
+  .dashboard {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));
+    gap: 0;
+  }
+
+  .dashboard-left.mobile-panel-hidden,
+  .dashboard-right.mobile-panel-hidden {
+    display: none !important;
+  }
+
+  .dashboard-left.mobile-panel-active,
+  .dashboard-right.mobile-panel-active {
+    display: flex !important;
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    width: 100%;
+    border-radius: 14px;
+  }
+}
+
+/* Small Mobile Screens (<= 480px) */
+@media (max-width: 480px) {
+  .mobile-nav {
+    padding: 6px 8px;
+    gap: 6px;
+  }
+
+  .mobile-nav-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+    min-height: 38px;
+  }
+
+  .dashboard {
+    padding: 8px;
+    padding-bottom: max(8px, env(safe-area-inset-bottom, 8px));
+  }
+
+  .dashboard-left,
+  .dashboard-right {
+    border-radius: 12px;
   }
 }

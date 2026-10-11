@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import {
   uploadDocument,
@@ -7,7 +6,14 @@ import {
 } from "../services/api";
 import "./LeftPanel.css";
 
-function LeftPanel({ onUploadSuccess, onChatSuccess, onReset }) {
+function LeftPanel({
+  onUploadSuccess,
+  onChatSuccess,
+  onReset,
+  onSwitchToInspector,
+  hasUploadedData,
+  chunkCount,
+}) {
   const [activeTab, setActiveTab] = useState("chat");
   const [file, setFile] = useState(null);
   const [question, setQuestion] = useState("");
@@ -20,7 +26,6 @@ function LeftPanel({ onUploadSuccess, onChatSuccess, onReset }) {
 
   useEffect(() => {
     const history = chatHistoryRef.current;
-
     if (history) {
       history.scrollTop = history.scrollHeight;
     }
@@ -147,17 +152,35 @@ function LeftPanel({ onUploadSuccess, onChatSuccess, onReset }) {
   return (
     <aside className="left-panel">
       <div className="panel-heading">
-        <h2>Workspace</h2>
-        <p>Upload documents and ask questions</p>
+        <div className="panel-heading-row">
+          <div>
+            <h2>Workspace</h2>
+            <p>Upload documents & ask questions</p>
+          </div>
 
-        <button
-          type="button"
-          className="reset-button"
-          onClick={handleReset}
-          disabled={loading}
-        >
-          {loading ? "Please wait..." : "Reset Session"}
-        </button>
+          <button
+            type="button"
+            className="reset-button"
+            onClick={handleReset}
+            disabled={loading}
+          >
+            {loading ? "..." : "Reset"}
+          </button>
+        </div>
+
+        {hasUploadedData && (
+          <button
+            type="button"
+            className="mobile-inspect-prompt"
+            onClick={onSwitchToInspector}
+            aria-label="View document in inspector"
+          >
+            <span className="inspect-prompt-title">
+              📊 Document Loaded ({chunkCount} chunks)
+            </span>
+            <span className="inspect-prompt-link">View Inspector →</span>
+          </button>
+        )}
       </div>
 
       <div className="panel-tabs">
@@ -189,8 +212,10 @@ function LeftPanel({ onUploadSuccess, onChatSuccess, onReset }) {
       <div className="panel-content">
         {activeTab === "chat" ? (
           <div className="chat-content">
-            <h3>Ask your document</h3>
-            <p>Ask questions based on your uploaded document.</p>
+            <div className="chat-subheading">
+              <h3>Ask your document</h3>
+              <p>Answers are grounded strictly in your document context.</p>
+            </div>
 
             <div
               className="chat-history"
@@ -200,7 +225,9 @@ function LeftPanel({ onUploadSuccess, onChatSuccess, onReset }) {
             >
               {messages.length === 0 && (
                 <div className="chat-empty">
+                  <div className="chat-empty-icon">💬</div>
                   <p>Your conversation will appear here.</p>
+                  <span>Upload a file or ask questions to get started.</span>
                 </div>
               )}
 
@@ -214,7 +241,7 @@ function LeftPanel({ onUploadSuccess, onChatSuccess, onReset }) {
                   }`}
                 >
                   <span className="message-sender">
-                    {message.role === "user" ? "You" : "AI Answer"}
+                    {message.role === "user" ? "You" : "AI Assistant"}
                   </span>
 
                   <div
@@ -235,7 +262,7 @@ function LeftPanel({ onUploadSuccess, onChatSuccess, onReset }) {
 
               {loading && activeTab === "chat" && (
                 <div className="chat-message assistant-message">
-                  <span className="message-sender">AI Answer</span>
+                  <span className="message-sender">AI Assistant</span>
                   <div className="message-bubble typing-indicator">
                     Thinking...
                   </div>
@@ -244,19 +271,23 @@ function LeftPanel({ onUploadSuccess, onChatSuccess, onReset }) {
             </div>
 
             <form className="chat-form" onSubmit={handleChat}>
-              <label htmlFor="document-question">
-                Your question
-              </label>
-
-              <textarea
-                id="document-question"
-                className="chat-input"
-                value={question}
-                onChange={(event) => setQuestion(event.target.value)}
-                placeholder="Ask something about your document..."
-                rows={3}
-                disabled={loading}
-              />
+              <div className="chat-input-wrapper">
+                <textarea
+                  id="document-question"
+                  className="chat-input"
+                  value={question}
+                  onChange={(event) => setQuestion(event.target.value)}
+                  placeholder="Ask something about your document..."
+                  rows={2}
+                  disabled={loading}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleChat(e);
+                    }
+                  }}
+                />
+              </div>
 
               {error && (
                 <p className="upload-error" role="alert">
@@ -275,12 +306,14 @@ function LeftPanel({ onUploadSuccess, onChatSuccess, onReset }) {
           </div>
         ) : (
           <div className="upload-content">
-            <h3>Upload a document</h3>
-            <p>Choose a file to inspect its chunks and vectors.</p>
+            <div className="chat-subheading">
+              <h3>Upload a document</h3>
+              <p>Supports PDF, TXT, DOCX, XLSX, and CSV files.</p>
+            </div>
 
             <label className="file-picker" htmlFor="document-file">
-              <span className="file-picker-icon">↑</span>
-              <strong>Choose a file</strong>
+              <span className="file-picker-icon">📄</span>
+              <strong>Choose a file to process</strong>
               <span>PDF, TXT, DOCX, XLSX or CSV</span>
             </label>
 
@@ -298,7 +331,7 @@ function LeftPanel({ onUploadSuccess, onChatSuccess, onReset }) {
 
             {file && (
               <div className="selected-file">
-                <span>📄</span>
+                <span className="selected-file-icon">📎</span>
                 <span className="selected-file-name">{file.name}</span>
               </div>
             )}
@@ -315,7 +348,7 @@ function LeftPanel({ onUploadSuccess, onChatSuccess, onReset }) {
               onClick={handleUpload}
               disabled={loading}
             >
-              {loading ? "Processing document..." : "Upload Document"}
+              {loading ? "Processing Document..." : "Upload & Process"}
             </button>
           </div>
         )}
